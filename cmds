@@ -1,1 +1,7 @@
 nextflow run main.nf --slide $HIMC/visium_slides/V13M13-279.svs --outdir output/V13M13-279
+nextflow run main_nosplit.nf --jpeg $HIMC/visium_slides/OAAEJP_OCTIY5_annotated.jpg --outdir nextflow_segmentation
+
+cat tmp | tail -n+2 | parallel --dryrun -j1 -k --colsep '\t' "bsub_premium {1} 'nextflow run main_nosplit.nf --jpeg $HIMC/visium_slides/{1} --outdir $HIMC/himc-project-data/SAGN24/data/10X/{2}/nextflow_segmentation'"
+# make directory for qupath script
+cat tmp | tail -n+2 | parallel -j1 -k --colsep '\t' --dryrun "cd $HIMC/himc-project-data/SAGN24/data/10X/{2}/; mkdir -vp spatial_tmp; cp -f nextflow_segmentation/*/output/outs/* spatial_tmp/"
+
