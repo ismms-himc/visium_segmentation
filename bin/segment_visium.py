@@ -99,6 +99,10 @@ def main(jpeg, scalefactors, positions):
                          index_col=0, header=None,
                          names=['in_tissue','row','col','cx','cy'])
 
+    # if cytassist, header already present..drop it
+    if df_pos.iloc[0].name == 'barcode':
+      df_pos = df_pos.drop(['barcode']) 
+
 
     with open(scalefactors, 'r') as f:
         scale_factors = json.load(f)
