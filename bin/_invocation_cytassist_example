@@ -1,0 +1,15 @@
+@include "rna/_spatial_imaging_cs.mro"
+
+call _SPATIAL_IMAGING_CS as SPATIAL_IMAGING_CS(
+    slide_serial_capture_area = "V52Y10-344-A1",
+    loupe_alignment_file      = null,
+    gpr_file                  = null,
+    reorientation_mode        = "rotation+mirror",
+    tissue_image_paths        = ["/sc/arion/projects/HIMC/darwin/cytassist/datasets/CytAssist_FFPE_Mouse_TMA_3x3_2mm_microscope.tif"],
+    cytassist_image_paths     = ["/sc/arion/projects/HIMC/darwin/cytassist/datasets/CytAssist_FFPE_Mouse_TMA_3x3_2mm_cytaimage.tif"],
+    dark_images               = 0,
+    dapi_channel_index        = null,
+    barcode_whitelist         = "visium-v5",
+    image_page_names          = null,
+    skip_tissue_detection     = false,
+)
