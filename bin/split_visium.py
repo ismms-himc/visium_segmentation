@@ -15,7 +15,7 @@ from PIL import Image
 import os
 import argparse
 
-def main(slide_path):
+def main(slide_path, shift_amount, image_list):
     # Open the Visium slide
     # slide_path = "3-11-2022_Visium_Slide1_Raphael.svs"
     slide = openslide.OpenSlide(slide_path)
@@ -28,7 +28,10 @@ def main(slide_path):
     
     # Define the amount of shift (in pixels)
     # shift_amount = 5500  # Adjust this value as needed
-    shift_amount = 0  # Adjust this value as needed 
+    if shift_amount:
+      shift_amount = int(shift_amount)
+    else:
+      shift_amount = 0  # Adjust this value as needed 
     
     # Recalculate slide width if shift exists
     slide_width = slide_width - (shift_amount*2)
@@ -63,7 +66,10 @@ def main(slide_path):
     
         # Save the column region image as a JPEG file
         #region_image_path = f"{outdir}/column_{i}.jpg"
-        region_image_path = f"column_{i}.jpg"
+        if image_list:
+          region_image_path = f"{image_list[i]}.jpg"
+        else:
+          region_image_path = f"column_{i}.jpg"
         region_rgb.save(region_image_path, "JPEG")
     
     # Close the original slide
@@ -75,6 +81,9 @@ if __name__ == '__main__':
 
     # Required positional argument
     parser.add_argument("slide_path", help="Visium full slide path")
+    parser.add_argument('-s', '--shift', help="Shift length in pixels", required=False)
+    parser.add_argument('-l','--image_names', nargs='+', help='Image names (left to right) eg. -l image1 image2 image3 image4', required=False)
+
 
     parser.add_argument(
     "--version",
@@ -83,4 +92,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     
-    main(args.slide_path)
+    main(args.slide_path, args.shift, args.image_names)

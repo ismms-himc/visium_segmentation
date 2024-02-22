@@ -7,7 +7,7 @@ params.jpeg = "$baseDir/cytassist_test/MAGA03_B10_257_1001.jpg"
 params.visium_slide = "$baseDir/cytassist_test/MAGA03_257-1001_0_cytassist.tif"
 params.alignment = "$baseDir/cytassist_test/cytassist_alignment.json"
 params.downsample_factor = 7 
-params.invocation = "$baseDir/bin/_invocation_cytassist_nf"
+params.invocation = "$baseDir/bin/_invocation_cytassist_loupealn_nf"
 params.outdir = "$baseDir/test/cytassist"
 
 log.info """\

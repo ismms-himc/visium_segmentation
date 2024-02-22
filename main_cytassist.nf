@@ -4,7 +4,8 @@
 
 params.microscopy_slide = "$baseDir/cytassist_test/MAGA03_B10_257_1001.svs"
 params.visium_slide = "$baseDir/cytassist_test/MAGA03_257-1001_0_cytassist.tif"
-params.downsample_factor = 7 
+//params.downsample_factor = 7 
+params.downsample_factor = 4
 params.invocation = "$baseDir/bin/_invocation_cytassist_nf"
 params.outdir = "$baseDir/test/cytassist"
 

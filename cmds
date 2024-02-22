@@ -5,3 +5,62 @@ cat tmp | tail -n+2 | parallel --dryrun -j1 -k --colsep '\t' "bsub_premium {1} '
 # make directory for qupath script
 cat tmp | tail -n+2 | parallel -j1 -k --colsep '\t' --dryrun "cd $HIMC/himc-project-data/SAGN24/data/10X/{2}/; mkdir -vp spatial_tmp; cp -f nextflow_segmentation/*/output/outs/* spatial_tmp/"
 
+# Cytassit test
+nextflow run main_cytassist.nf -c nextflow_cytassist.config
+
+# Cytassist MAGA03
+tail -n+2 MAGA03_input.csv | \
+head -n1 | \
+parallel --dryrun -j1 -k --colsep ',' \
+'
+bsub_premium {1/} \
+"
+nextflow run main_cytassist.nf \
+-c nextflow_cytassist.config \
+--microscopy_slide {1} \
+--visium_slide {2} \
+--outdir {3}
+"
+'
+
+# Cytassist No downsample
+nextflow run main_cytassist_nods.nf -c nextflow_cytassist.config
+
+# Cytassist MAGA03
+tail -n+2 MAGA03_input_nods.csv | \
+grep -f rerun | \
+parallel --dryrun -j1 -k --colsep ',' \
+'
+bsub_premium {1/} \
+"
+nextflow run main_cytassist_nods.nf \
+-c nextflow_cytassist.config \
+--microscopy_slide {2} \
+--visium_slide {4} \
+--jpeg {3} \
+--alignment {5} \
+--outdir {1}/segmentation \
+-resume
+"
+'
+
+# Cytassist MAGA03
+tail -n+2 batch_cmds/MAGA03_input_20231214_nods.csv | \
+parallel --dryrun -j1 -k --colsep ',' \
+'
+bsub_premium {1/} \
+"
+nextflow run main_cytassist_nods.nf \
+-c nextflow_cytassist.config \
+--microscopy_slide {1} \
+--visium_slide {2} \
+--jpeg {4} \
+--alignment {5} \
+--outdir {3}/segmentation \
+--downsample_factor {6} \
+-resume
+"
+'
+
+# for FF or FFPE with microscropy slides that dont have to be split..
+nextflow run main_nosplit_ds_microscopy.nf -c nextflow_cytassist.config

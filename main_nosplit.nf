@@ -71,6 +71,7 @@ process run_segmentation {
 
   output:
   path "stardist_detections.csv"
+  path "plots/*"
 
   script:
   """

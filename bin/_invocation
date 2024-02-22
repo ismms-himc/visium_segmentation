@@ -2,7 +2,7 @@
 
 call _SPATIAL_IMAGING_CS as SPATIAL_IMAGING_CS(
     slide_serial_capture_area = null,
-    loupe_alignment_file      = null,
+    loupe_alignment_file      = "/sc/arion/projects/HIMC/nextflow/visium_segmentation/data/6-8-23_V13F06-386_slide2.json",
     gpr_file                  = null,
     reorientation_mode        = "rotation+mirror",
     tissue_image_paths        = ["<ADD_IMAGE>"],

@@ -5,6 +5,8 @@
 params.slide = "$baseDir/test/3-11-2022_Visium_Slide1_Raphael.svs"
 params.invocation = "$baseDir/bin/_invocation"
 params.outdir = "$baseDir/test/out"
+params.shift = "0"
+params.imagenames = "column_0 column_1 column_2 column_3"
 
 log.info """\
          S E G M E N T A T I O N   P I P E L I N E    
@@ -21,6 +23,8 @@ process split_images {
 
   input:
   path slide from params.slide
+  val shift from params.shift
+  val imagenames from params.imagenames
 
   output:
   path "*.jpg" into jpeg_ch
@@ -28,12 +32,15 @@ process split_images {
   script:
   """
   $baseDir/bin/split_visium.py \
-  $slide 
+  $slide \
+  -s $shift \
+  -l $imagenames
   """
 }
 
 process run_spaceranger_image {
   publishDir "$params.outdir/${jpeg.getSimpleName()}", mode: 'copy', overwrite: true
+  errorStrategy 'ignore'
 
   module  "spaceranger/1.3.1" 
  
@@ -58,6 +65,7 @@ process run_spaceranger_image {
 
 process run_segmentation {
   publishDir "$params.outdir/${jpeg.getSimpleName()}", mode: 'copy', overwrite: true
+  errorStrategy 'ignore'
 
   input:
   tuple \
@@ -68,6 +76,7 @@ process run_segmentation {
 
   output:
   path "stardist_detections.csv"
+  path "plots/*"
 
   script:
   """

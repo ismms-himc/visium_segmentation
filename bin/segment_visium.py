@@ -31,7 +31,7 @@ import tempfile
 import shutil
 import random
 import argparse
-
+import os
 
 def stardist_2D_versatile_he(img, nms_thresh=None, prob_thresh=None):
 #     axis_norm = (0,1)   # normalize channels independently
@@ -56,9 +56,13 @@ def stardist_2D_versatile_he(img, nms_thresh=None, prob_thresh=None):
 #     temp_dir.cleanup()
     return labels
 
-def segment_bc(x,y,rad):
-    
-    crop_center = img.crop_center(x, y, radius=int(spot_radius_fullres))
+def segment_bc(bc,x,y,rad):
+   
+    try:
+      crop_center = img.crop_center(x, y, radius=int(spot_radius_fullres))
+    except ValueError as e:
+      print(e)
+      return np.nan
     
     sq.im.segment(
     img=crop_center,
@@ -68,16 +72,18 @@ def segment_bc(x,y,rad):
     layer_added="segmented_stardist_default",
     prob_thresh=0.3,
     nms_thresh=None,
-)
+    )
+
     print(
         f"Number of segments in crop: {len(np.unique(crop_center['segmented_stardist_default']))}"
     )
-
-#     fig, axes = plt.subplots(1, 2)
-#     crop_center.show("image", ax=axes[0])
-#     _ = axes[0].set_title("H&H")
-#     crop_center.show("segmented_stardist_default", cmap="jet", interpolation="none", ax=axes[1])
-#     _ = axes[1].set_title("segmentation")
+    
+    fig, axes = plt.subplots(1, 2)
+    crop_center.show("image", ax=axes[0])
+    _ = axes[0].set_title("H&H")
+    crop_center.show("segmented_stardist_default", cmap="jet", interpolation="none", ax=axes[1])
+    _ = axes[1].set_title("segmentation")
+    plt.savefig(f'plots/{bc}.png')
     
     # double check -1 below
 #     temp_dir.cleanup()
@@ -90,6 +96,9 @@ def main(jpeg, scalefactors, positions):
     Image.MAX_IMAGE_PIXELS=None
     im = Image.open(source_image_path)
     image_hires = np.array(im)
+
+    # remove extra channel if it exists
+    image_hires = image_hires[:, :, :3].copy()
     
     global img
     img = sq.im.ImageContainer(image_hires)
@@ -116,11 +125,14 @@ def main(jpeg, scalefactors, positions):
     # filter for spots in tissue
     df_pos_in = df_pos[df_pos['in_tissue']==1]
 #     df_pos_in = df_pos_in.iloc[:100]
+#
+    os.makedirs('plots', exist_ok=True)
     
     start = time.time()
     with Pool(5) as p:
         detections = p.starmap(segment_bc,
                                zip(
+                                   df_pos_in.index.tolist(),
                                    df_pos_in['cx'].values.tolist(),
                                    df_pos_in['cy'].values.tolist(),
                                    [spot_radius_fullres for i in range(df_pos_in.shape[0])]
