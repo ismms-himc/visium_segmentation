@@ -1,5 +1,10 @@
 Run Space Ranger's registration algorithm to get 10x cellular barcodes corresponding to a spot, then segment cells in each spot using Stardist. For Visium OCT and FFPE the slide with 4 images is split equally into 4 separate files. This can be buggy if the total width is not consistent between files. Use shift parameter (in pixels) to fix this issue. Visium Cytassist works with full microscopy image and visium captured image.
 
+Location on Minerva
+```
+/sc/arion/projects/HIMC/nextflow/visium_segmentation
+```
+
 To run Visium OCT or FFPE with 4 images in microscopy slide (eg. SVS format)
 ```
 nextflow run main.nf \
