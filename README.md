@@ -28,9 +28,26 @@ nextflow run main_nosplit_ds_microscopy.nf \
 
 To run Visium OCT or FFPE with just one image in DOWNSAMPLED from microscopy slide (in JPEG format)
 ```
-
+nextflow run main_nosplit.nf \
+--jpeg V12Y31-038_D1.jpg \
+--outdir output/V12Y31-038_D1
 ```
 
+Above pipeline can be test locally with a different config file
+```
+-c nextflow_local.config
+```
 
+To run Cytassist provide a microscopy image in SVS and JPEG, Visium cytassist image (usually TIFF) and alignment file using Loupe Browser in JSON format. Microscopy image improves segmentation immensely
+```
+nextflow run main_cytassist_nods.nf \
+--microscopy_slide MAGA03_B10_257_1001.svs \
+--visium_slide 257-1062Post.jpg \
+--jpeg MAGA03_B10_257_1001.jpg \
+--alignment 257-1062Post.json \
+--outdir output/257-1062Post/segmentation \
+--downsample_factor 2 \ # When downsampling was done to convert SVS to JPEG, how much was it downsampled by ?
+-c nextflow_cytassist.config \
+```
 
 
