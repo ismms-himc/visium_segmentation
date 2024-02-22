@@ -50,4 +50,10 @@ nextflow run main_cytassist_nods.nf \
 -c nextflow_cytassist.config \
 ```
 
+Previous commands can be found here:
+```
+cmds
+batch_cmds/
+```
+
 
